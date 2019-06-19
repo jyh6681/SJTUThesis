@@ -3,7 +3,7 @@
 # Basename of thesis
 THESIS = thesis
 PACKAGE = sjtuthesis
-CLSFILES = $(PACKAGE).cls $(PACKAGE)-bachelor.ltx $(PACKAGE)-graduate.ltx
+CLSFILES = $(PACKAGE).cls $(PACKAGE)-bachelor.ltx $(PACKAGE)-graduate.ltx sjtudoc.cls
 
 # Option for latexmk
 LATEXMK_OPT = -xelatex -silent -file-line-error -halt-on-error -interaction=nonstopmode
@@ -29,7 +29,7 @@ $(CLSFILES) : $(PACKAGE).dtx
 
 doc : $(PACKAGE).pdf
 
-$(PACKAGE).pdf : $(PACKAGE).dtx FORCE_MAKE
+$(PACKAGE).pdf : $(PACKAGE).dtx $(CLSFILES) FORCE_MAKE
 	latexmk $(LATEXMKOPTS) $<
 
 $(THESIS).pdf : $(THESIS).tex $(CLSFILES) FORCE_MAKE
