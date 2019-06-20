@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 LABEL maintainer="Ce Gao(gaocegege) <gaocegege@hotmail.com>"
 
-ARG VERSION=${version:-"2018"}
+ARG VERSION=${version:-"2019"}
 ARG PLATFORM=${platform:-"x86_64-linux"}
 
 ENV PATH=${PATH}:"/usr/local/texlive/${VERSION}/bin/${PLATFORM}"
