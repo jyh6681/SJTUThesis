@@ -86,15 +86,17 @@ zip -q -r -9 $JOB_NAME-v$VERSION.zip    $JOB_NAME-$VERSION
 cd $TDS_DIR
 zip -q -r -9 $JOB_NAME.tds.zip .
 
-cp $TEMP_DIR/*.dtx $CTAN_DIR
-cp $TEMP_DIR/*.pdf $CTAN_DIR
+cp $TEMP_DIR/*.dtx                      $CTAN_DIR/
+cp $TEMP_DIR/*.ins                      $CTAN_DIR/
+cp $TEMP_DIR/*.pdf                      $CTAN_DIR/
 
 rm $TEMP_DIR/*.*
-cp $TDS_DIR/*.zip $TEMP_DIR
+cp $TDS_DIR/*.zip                       $TEMP_DIR/
 rm -r $TDS_DIR
 
 # Make CTAN zip
 cd $TEMP_DIR
+rm $TEMP_DIR/latexmkrc
 zip -q -r -9 $JOB_NAME.zip .
 
 cd $WORKING_DIR
