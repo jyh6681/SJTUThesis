@@ -1,14 +1,23 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # This script is used for creating CTAN archive of sjtuthesis.
 
+if [ "$#" -ne 5 ]; then
+  echo "Usage: $0 SOURCE_DIR LOGO_DIR SAMPLE_DIR RELEASE_DIR VERSION" >&2
+  exit 1
+fi
+
 JOB_NAME=sjtuthesis
 WORKING_DIR=$PWD
-VERSION=$(git describe --tags)
+VERSION=$5
 
-# Copy all the files to system temp folder, in order to use
-# chmod correctly.
 TEMP_DIR=/tmp/$JOB_NAME
+
+SOURCE_DIR=$WORKING_DIR/$1
+LOGO_DIR=$WORKING_DIR/$2
+SAMPLE_DIR=$WORKING_DIR/$3
+RELEASE_DIR=$WORKING_DIR/$4
+OUTPUT_DIR=$RELEASE_DIR/$JOB_NAME-$VERSION
 
 TDS_DIR=$TEMP_DIR/TDS
 CTAN_DIR=$TEMP_DIR/$JOB_NAME
@@ -17,28 +26,26 @@ SRC_DIR=$TDS_DIR/source/latex/$JOB_NAME
 TEX_DIR=$TDS_DIR/tex/latex/$JOB_NAME
 DOC_DIR=$TDS_DIR/doc/latex/$JOB_NAME
 
-LOGO_DIR=$WORKING_DIR/logos
-RELEASE_DIR=$WORKING_DIR/release
-OUTPUT_DIR=$RELEASE_DIR/$JOB_NAME-$VERSION
-
-if [ -d $RELEASE_DIR ]; then
-  rm -rf $RELEASE_DIR
-fi
-
 mkdir -p $TEMP_DIR
-
 mkdir -p $TDS_DIR
 mkdir -p $CTAN_DIR
-mkdir -p $RELEASE_DIR
-cp -r $WORKING_DIR/sample               $OUTPUT_DIR
+
+if [ -d $RELEASE_DIR ]; then
+  echo 'Directory' $4 'already exists'
+  exit 1
+else
+  mkdir -p $RELEASE_DIR
+fi
+
+cp -r $SAMPLE_DIR                       $OUTPUT_DIR
 
 mkdir -p $SRC_DIR
 mkdir -p $TEX_DIR
 mkdir -p $DOC_DIR
 
-cp $WORKING_DIR/source/$JOB_NAME.dtx    $TEMP_DIR/
-cp $WORKING_DIR/source/latexmkrc        $TEMP_DIR/
-cp $WORKING_DIR/sample/thesis.tex       $TEMP_DIR/
+cp $SOURCE_DIR/$JOB_NAME.dtx            $TEMP_DIR/
+cp $SOURCE_DIR/latexmkrc                $TEMP_DIR/
+cp $SAMPLE_DIR/thesis.tex               $TEMP_DIR/
 cp $LOGO_DIR/sjtu-badge.pdf             $TEMP_DIR/
 cp $LOGO_DIR/sjtu-logo.pdf              $TEMP_DIR/
 cp $LOGO_DIR/sjtu-name.pdf              $TEMP_DIR/
@@ -76,9 +83,9 @@ cd $RELEASE_DIR
 zip -q -r -9 $JOB_NAME-overleaf-v$VERSION.zip $JOB_NAME-$VERSION
 
 rm $OUTPUT_DIR/gb7714-2015.*
-cp $WORKING_DIR/source/latexmkrc        $OUTPUT_DIR/.latexmkrc
-cp $WORKING_DIR/source/sample.mak       $OUTPUT_DIR/Makefile
-cp $WORKING_DIR/source/sample.bat       $OUTPUT_DIR/compile.bat
+cp $SOURCE_DIR/latexmkrc                $OUTPUT_DIR/.latexmkrc
+cp $SOURCE_DIR/sample.mak               $OUTPUT_DIR/Makefile
+cp $SOURCE_DIR/sample.bat               $OUTPUT_DIR/compile.bat
 
 zip -q -r -9 $JOB_NAME-v$VERSION.zip    $JOB_NAME-$VERSION
 
